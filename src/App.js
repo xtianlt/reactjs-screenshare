@@ -15,6 +15,11 @@ export default function App() {
 
     const mediaStream = new MediaStream(stream)
 
+    mediaStream.oninactive = (e) => {
+      document.getElementById(e.target.id).remove()
+      setNumScreens(document.getElementsByTagName('video').length)
+    } 
+
     updateEl(mediaStream)
     setNumScreens(numScreens + 1)
   }
