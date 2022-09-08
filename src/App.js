@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState, useRef } from 'react'
 
-function App() {
+import './App.css'
+
+export default function App() {
+  const [numScreens, setNumScreens] = useState(0)
+
+  const initStreams = () => {
+      requestScreens()
+  }
+
+  const requestScreens = async () => {
+    const { mediaDevices } = navigator
+    const stream = await mediaDevices.getDisplayMedia()
+
+    const mediaStream = new MediaStream(stream)
+
+    updateEl(mediaStream)
+    setNumScreens(numScreens + 1)
+  }
+
+  const updateEl = (mediaStream) => {
+    const videoEl = document.createElement('video')
+
+    videoEl.setAttribute('id', mediaStream.id)
+    videoEl.setAttribute('autoplay', true)
+    videoEl.style.height = '100vh'
+    videoEl.srcObject = mediaStream
+    
+    document.getElementById('screens').appendChild(videoEl)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id="screens" className='screens'>
+      <button onClick={() => initStreams()}>{!numScreens ? `Share screen` : `Add screen`}</button>
     </div>
-  );
+  )
 }
-
-export default App;
